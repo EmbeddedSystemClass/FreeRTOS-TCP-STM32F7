@@ -1,0 +1,3 @@
+[submodule "Middlewares/Third_Party/FreeRTOS-Plus-TCP"]
+	path = Middlewares/Third_Party/FreeRTOS-Plus-TCP
+	url = https://github.com/orangesalad/FreeRTOS-Plus-TCP.git
