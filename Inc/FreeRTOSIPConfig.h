@@ -18,13 +18,13 @@
 #define ipconfigSOCK_DEFAULT_RECEIVE_BLOCK_TIME	( 5000 )
 #define	ipconfigSOCK_DEFAULT_SEND_BLOCK_TIME	( 5000 )
 
-#define ipconfigUSE_LLMNR					( 0 )
-#define ipconfigUSE_NBNS					( 0 )
+#define ipconfigUSE_LLMNR					 0 
+#define ipconfigUSE_NBNS					 0 
 
-#define ipconfigUSE_DNS_CACHE				( 1 )
-#define ipconfigDNS_CACHE_NAME_LENGTH		( 16 )
-#define ipconfigDNS_CACHE_ENTRIES			( 4 )
-#define ipconfigDNS_REQUEST_ATTEMPTS		( 2 )
+#define ipconfigUSE_DNS_CACHE				1
+#define ipconfigDNS_CACHE_NAME_LENGTH		16
+#define ipconfigDNS_CACHE_ENTRIES			4
+#define ipconfigDNS_REQUEST_ATTEMPTS		2
 
 #define ipconfigIP_TASK_PRIORITY			( configMAX_PRIORITIES - 2 )
 
@@ -40,7 +40,7 @@
 
 #define ipconfigARP_CACHE_ENTRIES		6
 
-#define ipconfigMAX_ARP_RETRANSMISSIONS ( 5 )
+#define ipconfigMAX_ARP_RETRANSMISSIONS 5
 
 #define ipconfigMAX_ARP_AGE			150
 
@@ -55,9 +55,9 @@
 #define ipconfigUDP_TIME_TO_LIVE		128
 #define ipconfigTCP_TIME_TO_LIVE		128 
 
-#define ipconfigUSE_TCP				( 1 )
+#define ipconfigUSE_TCP				1
 
-#define ipconfigUSE_TCP_WIN			( 1 )
+#define ipconfigUSE_TCP_WIN			1
 
 #define ipconfigNETWORK_MTU		1200
 
@@ -73,14 +73,5 @@
 #define ipconfigPACKET_FILLER_SIZE 2
 
 #define ipconfigTCP_WIN_SEG_COUNT		240
-
-// #define ipconfigTCP_RX_BUFFER_LEN			( 1000 )
-// #define ipconfigTCP_TX_BUFFER_LEN			( 1000 )
-
-// #define ipconfigTCP_HANG_PROTECTION			( 1 )
-// #define ipconfigTCP_HANG_PROTECTION_TIME	( 30 )
-
-#define ipconfigTCP_KEEP_ALIVE				( 1 )
-#define ipconfigTCP_KEEP_ALIVE_INTERVAL		( 20 ) 
 
 #endif 
