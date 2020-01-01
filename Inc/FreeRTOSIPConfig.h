@@ -11,8 +11,6 @@
 
 #define ipconfigUSE_RMII                                1      
 
-#define arpGRATUITOUS_ARP_PERIOD         ( pdMS_TO_TICKS( 500 ) )
-
 #define ipconfigBYTE_ORDER pdFREERTOS_LITTLE_ENDIAN
 
 #define ipconfigSOCK_DEFAULT_RECEIVE_BLOCK_TIME	( 5000 )
@@ -57,9 +55,9 @@
 
 #define ipconfigUSE_TCP				1
 
-#define ipconfigUSE_TCP_WIN			1
+#define ipconfigUSE_TCP_WIN			0
 
-#define ipconfigNETWORK_MTU		1200
+#define ipconfigNETWORK_MTU		1500
 
 #define ipconfigUSE_DNS			1
 
@@ -73,5 +71,12 @@
 #define ipconfigPACKET_FILLER_SIZE 2
 
 #define ipconfigTCP_WIN_SEG_COUNT		240
+
+/* Each TCP socket has a circular buffers for Rx and Tx, which have a fixed
+maximum size.  Define the size of Rx buffer for TCP sockets. */
+#define ipconfigTCP_RX_BUFFER_LENGTH			( 3 * 1460 )
+
+/* Define the size of Tx buffer for TCP sockets. */
+#define ipconfigTCP_TX_BUFFER_LENGTH			( 2 * 1460 )
 
 #endif 

@@ -54,6 +54,8 @@ Src/usbd_conf.c \
 Src/usbd_desc.c \
 Src/stm32f7xx_it.c \
 Src/stm32f7xx_hal_msp.c \
+Src/TCP-related-CLI-commands.c \
+Src/TCPCommandConsole.c \
 Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pcd.c \
 Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pcd_ex.c \
 Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_usb.c \

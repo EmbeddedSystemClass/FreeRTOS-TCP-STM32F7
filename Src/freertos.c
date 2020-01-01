@@ -25,8 +25,14 @@
 #include "cmsis_os.h"
 
 /* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */     
+/* USER CODE BEGIN Includes */
+#include "FreeRTOS_IP.h"
+#include "FreeRTOS_Sockets.h"
+#include "FreeRTOS_DHCP.h"
 
+#include "rng.h"
+
+#include "TCPCommandConsole.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -46,13 +52,22 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
-
+static const uint8_t ucIPAddress[ 4 ] = { 10, 0 , 5, 5 };
+static const uint8_t ucNetMask[ 4 ] = { 255, 255, 255, 0 };
+static const uint8_t ucGatewayAddress[ 4 ] = { 0, 0, 0, 0 };
+static const uint8_t ucDNSServerAddress[ 4 ] = { 0, 0, 0, 0 };
+static const uint8_t ucMACAddress[ 6 ] = { 0, 0x80, 0xE1 , 0, 0, 0 };
 /* USER CODE END Variables */
 osThreadId defaultTaskHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
-   
+BaseType_t xApplicationGetRandomNumber( uint32_t *pulValue );
+void vApplicationIPNetworkEventHook( eIPCallbackEvent_t eNetworkEvent );
+
+void vApplicationMallocFailedHook(void);
+
+extern void vRegisterTCPCLICommands( void );
 /* USER CODE END FunctionPrototypes */
 
 void StartDefaultTask(void const * argument);
@@ -129,6 +144,9 @@ void StartDefaultTask(void const * argument)
   /* init code for USB_DEVICE */
   MX_USB_DEVICE_Init();
   /* USER CODE BEGIN StartDefaultTask */
+  
+  FreeRTOS_IPInit( ucIPAddress, ucNetMask, ucGatewayAddress, ucDNSServerAddress, ucMACAddress );
+
   /* Infinite loop */
   for(;;)
   {
@@ -140,7 +158,80 @@ void StartDefaultTask(void const * argument)
 
 /* Private application code --------------------------------------------------*/
 /* USER CODE BEGIN Application */
+void vApplicationIPNetworkEventHook( eIPCallbackEvent_t eNetworkEvent )
+{
+uint32_t ulIPAddress, ulNetMask, ulGatewayAddress, ulDNSServerAddress;
+static BaseType_t xTasksAlreadyCreated = pdFALSE;
+
+	if( eNetworkEvent == eNetworkUp )
+	{
+    
+    HAL_GPIO_TogglePin(LD1_GPIO_Port, LD1_Pin);
+
+		if( xTasksAlreadyCreated == pdFALSE )
+		{
+      vRegisterTCPCLICommands();
+      vStartTCPCommandInterpreterTask(configMINIMAL_STACK_SIZE, 23, tskIDLE_PRIORITY  );
+			
+      xTasksAlreadyCreated = pdTRUE;
+		}
+
+		/* Print out the network configuration, which may have come from a DHCP
+		server. */
+		FreeRTOS_GetAddressConfiguration( &ulIPAddress, &ulNetMask, &ulGatewayAddress, &ulDNSServerAddress );
+	}
+}
+
+BaseType_t xApplicationGetRandomNumber( uint32_t *pulValue )
+{
+HAL_StatusTypeDef xResult;
+BaseType_t xReturn;
+uint32_t ulValue;
+
+	xResult = HAL_RNG_GenerateRandomNumber( &hrng, &ulValue );
+	if( xResult == HAL_OK )
+	{
+		xReturn = pdPASS;
+		*pulValue = ulValue;
+	}
+	else
+	{
+		xReturn = pdFAIL;
+	}
+	return xReturn;
+}
+
+extern uint32_t ulApplicationGetNextSequenceNumber( 
+    uint32_t ulSourceAddress,
+    uint16_t usSourcePort,
+    uint32_t ulDestinationAddress,
+    uint16_t usDestinationPort )
+{
+    ( void ) ulSourceAddress;
+    ( void ) usSourcePort;
+    ( void ) ulDestinationAddress;
+    ( void ) usDestinationPort;
+    
+    uint32_t randNum = 0;
+
+    BaseType_t randValid = xApplicationGetRandomNumber(&randNum);
+
+    if(randValid != pdPASS)
+      randNum = 0xFFFFFFFF;
+    
+    return randNum;
      
+}
+
+void vApplicationMallocFailedHook(void)
+{
+  
+  size_t x = xPortGetFreeHeapSize();
+  
+  int y = 2;
+
+  y++;
+}
 /* USER CODE END Application */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
